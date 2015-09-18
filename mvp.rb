@@ -1,13 +1,17 @@
 require 'rubygems'
 require 'post_haste'
 require 'csv'
+require 'date'
 include PostHaste
 
 loop do
   date = Date.today.to_s.gsub('-','')
   mv_web = MostViewed.all('web', 100)
   mv_mobile = MostViewed.all('mobile', 100)
-  CSV.open("csv/#{date}.csv", "a+", :write_headers=> true, :headers => ['date','platform','type','datetime','title','byline','url','rank']) do |row|
+  file_name = "csv/#{date}.csv"
+  f = File.open(file_name)
+  wh = f.size > 50 ? false : true
+  CSV.open(file_name, "a+", :write_headers => wh, :headers => ['date','platform','type','datetime','title','byline','url','rank']) do |row|
     mv_web.each do |mv|
       row << [mv.datetime.to_date, mv.platform, mv.type, mv.datetime, mv.title, mv.byline, mv.url, mv.rank]
     end
