@@ -4,9 +4,10 @@ require 'csv'
 include PostHaste
 
 loop do
+  date = Date.today.to_s.gsub('-','')
   mv_web = MostViewed.all('web', 100)
   mv_mobile = MostViewed.all('mobile', 100)
-  CSV.open('csv/results.csv', 'a') do |row|
+  CSV.open("csv/#{date}.csv", "a+", :write_headers=> true, :headers => ['date','platform','type','datetime','title','byline','url','rank']) do |row|
     mv_web.each do |mv|
       row << [mv.datetime.to_date, mv.platform, mv.type, mv.datetime, mv.title, mv.byline, mv.url, mv.rank]
     end
@@ -14,8 +15,8 @@ loop do
       row << [mv.datetime.to_date, mv.platform, mv.type, mv.datetime, mv.title, mv.byline, mv.url, mv.rank]
     end
   end
-  system 'git add csv/results.csv'
+  system 'git add csv/'
   system "git commit -m 'updated from #{mv_web.first.datetime.to_s}'"
   system 'git push origin master'
-  sleep(1800)
+  sleep(3600)
 end
