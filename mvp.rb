@@ -17,5 +17,5 @@ loop do
   system 'git add csv/results.csv'
   system "git commit -m 'updated from #{mv_web.first.datetime.to_s}'"
   system 'git push origin master'
-  sleep(300)
+  sleep(1800)
 end
