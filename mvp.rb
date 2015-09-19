@@ -9,8 +9,13 @@ loop do
   mv_web = MostViewed.all('web', 100)
   mv_mobile = MostViewed.all('mobile', 100)
   file_name = "csv/#{date}.csv"
-  f = File.open(file_name)
-  wh = f.size > 50 ? false : true
+  begin
+    f = File.open(file_name)
+    wh = f.size > 50 ? false : true
+    f.close
+  rescue
+    wh = true
+  end
   CSV.open(file_name, "a+", :write_headers => wh, :headers => ['date','platform','type','datetime','title','byline','url','rank']) do |row|
     mv_web.each do |mv|
       row << [mv.datetime.to_date, mv.platform, mv.type, mv.datetime, mv.title, mv.byline, mv.url, mv.rank]
